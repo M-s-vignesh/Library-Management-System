@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+ <div class="container-fluid nav-bar p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+        <a href="" class="navbar-brand p-0">
+            <h1 class="display-5 text-secondary m-0">Hi {{ username }}</h1>
+            <!-- <img src="img/logo.png" alt="Logo"> -->
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{{ url }}" class="nav-item nav-link">Home</a>
+                <a href="#" class="nav-item nav-link">Profile</a>
+            </div>
+            <a href="{% url 'login' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+        </div>
+    </nav>
+</div>
+{% if title %}
+<link rel="stylesheet" href="{% static 'books/search.css' %}">
+<form method ='POST' action = '/Search-Book-By-Title'>
+<div class="search-box" style = 'margin: auto;'>
+		{% csrf_token %}
+    <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
+    <input type="text" class="input-search" name='search' required placeholder="Enter Book Title...">
+</div>
+</form>`  
+{% if messages %}
+{% for message in messages %}
+	<div id = 'message_container' style ='height : 60px' >
+    <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
+    </div>
+{% endfor %}
+{% endif %}
+{% elif author %}
+<link rel="stylesheet" href="{% static 'books/search.css' %}">
+<form method ='POST' action = '/Search-Book-By-Author'>
+<div class="search-box" style = 'margin: auto;'>
+		{% csrf_token %}
+    <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
+    <input type="text" class="input-search" name='search' required placeholder="Enter Book Author...">
+</div>
+</form>`
+{% if messages %}
+{% for message in messages %}
+	<div id = 'message_container' style ='height : 60px' >
+    <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
+    </div>
+{% endfor %}
+{% endif %}
+{% elif date %}
+<link rel="stylesheet" href="{% static 'books/search.css' %}">
+<form method ='POST' action = '/Search-Book-By-Published-Date'>
+<div class="search-box" style = 'margin: auto;'>
+		{% csrf_token %}
+    <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
+    <input type="date" class="input-search" name='search' required >
+</div>
+</form>`    
+{% if messages %}
+{% for message in messages %}
+	<div id = 'message_container' style ='height : 60px' >
+    <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
+    </div>
+{% endfor %}
+{% endif %}
+{% endif %}
+    <link rel="stylesheet" href="{% static 'books/table.css' %}">
+<div class="container" style='min-height: 150px;'>
+	
+	<div class="table">
+		<div class="table-header">
+			<div class="header__item"><a id="title" class="filter__link" href="#">Title</a></div>
+			<div class="header__item"><a id="title" class="filter__link" href="#">Author</a></div>
+			<div class="header__item"><a id="published_date" class="filter__link filter__link--number" href="#">Published Date</a></div>
+			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">No of Copies</a></div>
+            <div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Current Copies</a></div>
+        </div>
+		<div class="table-content">	
+            {% for detail in details %}
+			<div class="table-row">		
+				<div class="table-data">{{ detail.title }}</div>
+				<div class="table-data">{{ detail.author }}</div>
+				<div class="table-data">{{ detail.published_date }}</div>
+				<div class="table-data">{{ detail.no_of_copies }}</div>
+                <div class="table-data">{{ detail.current_copies }}</div>
+			</div>
+            {% endfor %}
+		</div>	
+	</div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+var properties = [
+	'title',
+	'published_date',
+	
+];
+
+$.each( properties, function( i, val ) {
+	
+	var orderClass = '';
+
+	$("#" + val).click(function(e){
+		e.preventDefault();
+		$('.filter__link.filter__link--active').not(this).removeClass('filter__link--active');
+  		$(this).toggleClass('filter__link--active');
+   		$('.filter__link').removeClass('asc desc');
+
+   		if(orderClass == 'desc' || orderClass == '') {
+    			$(this).addClass('asc');
+    			orderClass = 'asc';
+       	} else {
+       		$(this).addClass('desc');
+       		orderClass = 'desc';
+       	}
+
+		var parent = $(this).closest('.header__item');
+    		var index = $(".header__item").index(parent);
+		var $table = $('.table-content');
+		var rows = $table.find('.table-row').get();
+		var isSelected = $(this).hasClass('filter__link--active');
+		var isNumber = $(this).hasClass('filter__link--number');
+			
+		rows.sort(function(a, b){
+
+			var x = $(a).find('.table-data').eq(index).text();
+    			var y = $(b).find('.table-data').eq(index).text();
+				
+			if(isNumber == true) {
+    					
+				if(isSelected) {
+					return x - y;
+				} else {
+					return y - x;
+				}
+
+			} else {
+			
+				if(isSelected) {		
+					if(x < y) return -1;
+					if(x > y) return 1;
+					return 0;
+				} else {
+					if(x > y) return -1;
+					if(x < y) return 1;
+					return 0;
+				}
+			}
+    		});
+
+		$.each(rows, function(index,row) {
+			$table.append(row);
+		});
+
+		return false;
+	});
+
+});
+</script>
+<script>
+    var message_ele = document.getElementById("message_container");
+
+setTimeout(function(){ 
+   message_ele.style.display = "none"; 
+}, 3000);
+</script>
+{% endblock %}

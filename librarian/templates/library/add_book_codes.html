@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+ <div class="container-fluid nav-bar p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+        <a href="" class="navbar-brand p-0">
+            <h1 class="display-5 text-secondary m-0">Hi {{ username }}</h1>
+            <!-- <img src="img/logo.png" alt="Logo"> -->
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{{ url }}" class="nav-item nav-link">Home</a>
+                <a href="#" class="nav-item nav-link">Profile</a>
+            </div>
+            <a href="{% url 'login' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+        </div>
+    </nav>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="{% static 'register/style.css' %}">
+<form action = "#" method = post>
+  {% csrf_token %}
+<div class="demo-page">
+  <main class="demo-page-content" style = 'margin: auto; width: 70%; padding: 10px;'>
+    <section>
+      <div class="href-target" id="input-types"></div>
+      <h1 style = 'text-align : center'>
+        Add Book Codes
+      </h1>
+      {% if messages %}
+          {% for message in messages %}
+            <div id = 'message_container' style ='height : 60px' >
+              <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </symbol>
+              </svg>
+              <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                <div>
+                 {{ message }}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          {% endif %}
+      {% for field in form %}
+      <div class="nice-form-group">
+        <div class="nice-form-group" >
+        <label>{{ field.label |title }}</label>
+        </div>
+        {{ field }}
+      </div>
+      {% if  errors and field.label.title == "Code No" %}
+      <div style='margin : 0.5rem; color:red; font-size:15px'>
+       
+          <p>{{ errors }}</p>
+     
+      </div>
+      {% endif %}
+      {% endfor %}
+      <div style = 'margin-top : 25px;'>
+      <button type="submit" class="btn" style = 'width: 100px;
+      margin:0 auto;
+    display:block;
+    height: 40px;
+    border: none;
+    outline: none;
+    background: rgb(121, 229, 198);;
+    color: #fff;
+    font-size: 19px;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;'>Add</button>
+    <div>
+</div>
+</form>
+<script>
+  var message_ele = document.getElementById("message_container");
+
+setTimeout(function(){ 
+ message_ele.style.display = "none"; 
+}, 3000);
+</script>
+{% endblock %}

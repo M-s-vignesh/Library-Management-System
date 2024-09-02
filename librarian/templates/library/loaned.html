@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="{% static 'register\style.css' %}">
+  </head>
+{% block content %}
+<div class="container-fluid nav-bar p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+        <a href="" class="navbar-brand p-0">
+            <h1 class="display-5 text-secondary m-0">Hi {{ username }}</h1>
+            <!-- <img src="img/logo.png" alt="Logo"> -->
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{{ url }}" class="nav-item nav-link">Home</a>
+                <a href="#" class="nav-item nav-link">Profile</a>
+            </div>
+            <a href="{% url 'login' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+        </div>
+    </nav>
+</div>
+<form action = "" method='POST'>
+  {% csrf_token %}
+
+  <div class="demo-page">
+    <main class="demo-page-content" style = 'margin: auto; width: 70%; padding: 10px;'>
+      <section>
+        <div class="href-target" id="input-types"></div>
+        <h1 style = 'text-align : center'>
+          Loan Book
+        </h1>
+        {% for field in form %}
+        <div class="nice-form-group">
+          <div class="nice-form-group" >
+          <label>{{ field.label |title }}</label>
+          </div>
+          {{ field }}
+        </div>
+        {% endfor %}
+        <div style = 'margin-top : 25px;'>
+        <button type="submit" class="btn" style = 'width: 100px;
+        margin:0 auto;
+      display:block;
+      height: 40px;
+      border: none;
+      outline: none;
+      background: rgb(121, 229, 198);;
+      color: #fff;
+      font-size: 19px;
+      border-radius: 40px;
+      text-align: center;
+      box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;'>Submit</button>
+      <div>
+  </div>
+  </form>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/htmx.min.js' %}"></script>
+{% endblock %}

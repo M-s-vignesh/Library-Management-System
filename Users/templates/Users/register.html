@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Registration</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="{% static 'register\style.css' %}">
+</head>
+<body>
+<form action = "{% url 'students_registration' %}" method = post>
+  {% csrf_token %}
+<div class="demo-page">
+  <main class="demo-page-content" style = 'margin: auto; width: 70%; padding: 10px;'>
+    <section>
+      <div class="href-target" id="input-types"></div>
+      <h1 style = 'text-align : center'>
+        Student Registration
+      </h1>
+      {% for field in form %}
+      <div class="nice-form-group">
+        <div class="nice-form-group" >
+        <label>{{ field.label |title }}</label>
+        </div>
+        {{ field }}
+      </div>
+      {% if  Errors and Errors == field.label.title %}
+      <div style='margin : 0.5rem; color:red; font-size:15px'>
+        {% if field.label.title == 'Password' %}
+          <p>Password doesn't match.</p>
+        {% else %}
+          {{ Errors }} already Exists.
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+      <div style = 'margin-top : 25px;'>
+      <button type="submit" class="btn" style = 'width: 100px;
+      margin:0 auto;
+    display:block;
+    height: 40px;
+    border: none;
+    outline: none;
+    background: rgb(121, 229, 198);;
+    color: #fff;
+    font-size: 19px;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;'>Submit</button>
+    <div>
+</div>
+</form>
+</body>
+</html>

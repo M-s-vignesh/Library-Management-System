@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="{% static 'login\login.css' %}">
+</head>
+<body>
+  
+    <div class="wrapper">
+        <form action="{% url 'librarian_login' %}" method = post>
+            {% csrf_token %}
+            <h1>Login</h1>
+            <div class="input-box">
+                {{ form.employee_id  }}
+            </div>
+            <div class="input-box">
+                {{ form.password }}
+            </div>
+            {% if messages %}
+            {% for message in messages %}
+            <div id = 'message_container' style ='height : 60px' >
+            <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <!-- <div class="remember-forget">
+                <label><input type="checkbox">Remember me</label>
+                <a href="#">Forgot password?</a>
+            </div> -->
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <div class="register-link">
+            <p>Login as   <a href="{% url 'login' %}">Student</a></p>
+        </div>
+           
+    </div>
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script>
+    var message_ele = document.getElementById("message_container");
+
+setTimeout(function(){ 
+   message_ele.style.display = "none"; 
+}, 3000);
+</script>
+</body>
+</html>
