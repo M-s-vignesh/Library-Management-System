@@ -109,11 +109,11 @@ def loan_books(request):
       if form.is_valid():
           code = form.cleaned_data['bookcode']
           stu_id = form.cleaned_data['studentid']
-          #book_code.objects.filter(code_no = code.code_no).update(loaned = True)
-          stu = Student_details.objects.filter(student_id = stu_id)
-          print(stu)
-          
-          return HttpResponse("ok")
+          stu_exists = Student_details.objects.filter(student_id = stu_id).exists()
+          if stu_exists:
+            #book_code.objects.filter(code_no = code.code_no).update(loaned = True)
+            return HttpResponse("ok")
+          return HttpResponse("Student doesn't exists")
       else:
           print(form.errors.as_data())
           return HttpResponse(form.errors.as_data())

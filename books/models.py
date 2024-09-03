@@ -24,8 +24,10 @@ class book_code(models.Model):
     
     def __str__(self):
         return str(self.code_no)
-
-
+    
+class loaned_books(models.Model):
+    student_id = models.IntegerField(null=True)
+    student_book_code = models.ForeignKey(book_code,on_delete=models.CASCADE)
     
 
     
