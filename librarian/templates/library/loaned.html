@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Registration</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-  <link rel="stylesheet" href="{% static 'register\style.css' %}">
+  <link rel="stylesheet" href="{% static 'register/style.css' %}">
   </head>
 {% block content %}
 <div class="container-fluid nav-bar p-0">
@@ -53,6 +53,8 @@
           {% endfor %}
           {% endif %}
         {% for field in form %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+        <link rel="stylesheet" href="{% static 'register/style.css' %}">
         <div class="nice-form-group">
           <div class="nice-form-group" >
           <label>{{ field.label |title }}</label>
