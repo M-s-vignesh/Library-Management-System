@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,re_path
 from . import views
 
 urlpatterns = [
@@ -12,5 +12,9 @@ urlpatterns = [
     path('Search-Book-By-<str:str>',views.search_books,name='search_books_by'),
     path('Loan-Book',views.loan_books,name='loan_books'),
     path('load_codes/',views.loadcodes,name ='load_codes'),
+    path('Return-Book',views.return_book,name='return_book'),
+    path('book-title-autocomplete/',views.BookTitleAutocomplete.as_view(),name='book-title-autocomplete'),
+    path('studentid-autocomplete/',views.StudentIdAutocomplete.as_view(),name='studentid-autocomplete'),
+    
 ]
 
