@@ -1,13 +1,13 @@
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse
-from . forms import Login,loan
+from . forms import Login,loan,Return
 from . models import Librarian
 from django.contrib import messages
 from django.urls import reverse
 from books.forms import AddBook,AddBookCode
 from books.models import Books,book_code,loaned_books
-from django.db.models import F,Q
+from django.db.models import F,Q,Subquery,OuterRef
 from Users.models import Student_details
-
+from dal import autocomplete
 ############ Librarian Login ##########################
 def librarian_login(request):
     if request.method == 'POST':
@@ -150,4 +150,67 @@ def loan_books(request):
 def loadcodes(request):
     book_name = request.GET.get("book_title")
     values = book_code.objects.filter(book_id=book_name).filter(loaned = False)
+    print(values)
     return render(request,'library/codes.html',{'values':values})
+
+# def load_books(request):
+#     studentid = request.GET.get("student_ids")
+#     stid = loaned_books.objects.filter(student_id = studentid )
+#     books_code = book_code.objects.filter(id__in=Subquery(stid.values('student_book_code_id')))
+#     val_list = Books.objects.filter(id__in=Subquery(books_code.values('book_id')))
+#     print(val_list)
+#     return render(request,'library/loanedbooks.html',{'values':val_list})
+
+def return_book(request):
+    if request.method == 'POST':
+        form = Return(request.POST)
+        if form.is_valid():
+            val = form.cleaned_data['student_ids']
+            book_name = form.cleaned_data['book_title']
+            book_id = Books.objects.get(title=book_name)
+            loaned_book = book_code.objects.filter(book_id=book_id.id,loaned = True)
+            books_code = loaned_books.objects.filter(student_book_code_id__in=Subquery(loaned_book.values('id')),student_id=val)
+            book_code_id = books_code[0].student_book_code_id
+            loaned_id = books_code[0].id
+            st_details = Student_details.objects.get(student_id=val)
+            print(type(st_details.name))
+            ###removing manytomanyfield in database ##
+            book_id.studentname.remove(st_details)
+            #### updating loaned in book code model ###
+            book_code.objects.filter(id = book_code_id).update(loaned = False)
+            Books.objects.filter(id=book_id.id).update(current_copies = F('current_copies') + 1)
+            loaned_books.objects.filter(id = loaned_id)[0].delete()
+            messages.add_message(request, messages.SUCCESS,str(book_name)+" returned from "+st_details.name+"("+str(val)+") to Library.")
+            return HttpResponseRedirect('Return-Book')
+        else:
+            print(form.errors.as_data())
+            form = Return()
+            messages.add_message(request, messages.ERROR,"Something Went Wrong...!")
+            return render(request,'library/return_book.html',{'form':form,'username':uname,"url" : url})
+    form = Return()
+    return render(request,'library/return_book.html',{'form':form,'username':uname,"url" : url}) 
+
+class StudentIdAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        
+        qs = Student_details.objects.all()
+        if self.q:
+            qs = qs.filter(student_id__istartswith=self.q)
+        return qs
+class BookTitleAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        qs = loaned_books.objects.all()
+        stud_id= self.forwarded.get('student_ids', None)
+        if stud_id:
+            stud_id = Student_details.objects.get(id = stud_id).student_id
+            val = qs.filter(student_id=stud_id)
+            books_code = book_code.objects.filter(id__in=Subquery(val.values('student_book_code_id')))
+            qs = Books.objects.filter(id__in=Subquery(books_code.values('book_id')))
+            
+        else:
+            qs = None
+        if self.q:
+            qs = qs.filter(title__istartswith=self.q)
+        return qs

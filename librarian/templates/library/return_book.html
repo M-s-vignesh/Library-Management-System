@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{# Don't forget that one ! #}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid nav-bar p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+        <a href="" class="navbar-brand p-0">
+            <h1 class="display-5 text-secondary m-0">Hi {{ username }}</h1>
+            <!-- <img src="img/logo.png" alt="Logo"> -->
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{{ url }}" class="nav-item nav-link">Home</a>
+                <a href="#" class="nav-item nav-link">Profile</a>
+            </div>
+            <a href="{% url 'login' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+        </div>
+    </nav>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+<link rel="stylesheet" href="{% static 'register/style.css' %}">
+<form action = "" method='POST'>
+    {% csrf_token %}
+  
+    <div class="demo-page">
+      <main class="demo-page-content" style = 'margin: auto; width: 70%; padding: 10px;'>
+        <section>
+          <div class="href-target" id="input-types"></div>
+          <h1 style = 'text-align : center'>
+            Return Book
+          </h1>
+          {% if messages %}
+            {% for message in messages %}
+              <div id = 'message_container' style ='height : 60px' >
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                  <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                  </symbol>
+                </svg>
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                  <div>
+                   {{ message }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            {% endif %}
+          {% for field in form %}
+          
+          <link rel="stylesheet" href="{% static 'register/style.css' %}">
+          
+          <div class="nice-form-group">
+            <div class="nice-form-group" >
+            <label>{{ field.label |title }}</label>
+            </div>
+            <style>
+ 
+.nice-form-group > .select2-container--default .select2-selection{
+  background: var(--nf-input-background-color);
+  font-family: inherit;
+  font-size: var(--nf-input-font-size);
+  border-bottom-width: var(--nf-input-border-width);
+  font-family: var(--nf-input-font-family);
+  box-shadow: none;
+  border-radius: var(--nf-input-border-radius);
+  border: var(--nf-input-border-width) var(--nf-input-border-style) var(--nf-input-border-color);
+  border-bottom: var(--nf-input-border-bottom-width) var(--nf-input-border-style) var(--nf-input-border-color);
+  color: var(--nf-input-color);
+  width: 100%;
+  padding: calc(var(--nf-input-size)*0.75);
+  height: calc(var(--nf-input-size)*2.75);
+  line-height: normal;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: all 0.15s ease-out;
+  --icon-padding:calc(var(--nf-input-size)*2.25);
+  --icon-background-offset:calc(var(--nf-input-size)*0.75);
+  height: 40px;
+}
+.nice-form-group > .select2-container--default .select2-selection .select2-selection__rendered{
+  position:absolute;
+  top:7px;
+  left:7px;
+
+}
+            </style>
+            
+            {{ field }}
+            
+          </div>
+          {% if  Errors and field.label.title == "Student Id" %}
+        <div id = 'message_container' style='margin : 0.5rem; color:red; font-size:15px'>
+         
+            <p>{{ Errors }}</p>
+       
+        </div>
+        {% endif %}
+        
+          {% endfor %}
+          <div style = 'margin-top : 25px;'>
+          <button type="submit" class="btn" style = 'width: 100px;
+          margin:0 auto;
+        display:block;
+        height: 40px;
+        border: none;
+        outline: none;
+        background: rgb(121, 229, 198);;
+        color: #fff;
+        font-size: 19px;
+        border-radius: 40px;
+        text-align: center;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;'>Submit</button>
+        <div>
+    </div>
+    </form>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+<script>
+    (function($) {
+        $('#add-form').click(function() {
+            var index = $('#id_inline_test_models-TOTAL_FORMS').val()
+            var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
+            newTable.find(':input').each(function() {
+                for (attr of ['name', 'id'])
+                    $(this).attr(
+                        attr,
+                        $(this).attr(attr).replace('__prefix__', index)
+                    )
+            })
+            newTable.insertBefore($(this))
+            $('#id_inline_test_models-TOTAL_FORMS').val(
+                parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
+            )
+            newTable.slideDown()
+        })
+    })($)
+    </script>
+    <script>
+      var message_ele = document.getElementById("message_container");
+    
+    setTimeout(function(){ 
+     message_ele.style.display = "none"; 
+    }, 5000);
+    </script>
+{% endblock %}
+
+

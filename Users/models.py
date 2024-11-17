@@ -11,7 +11,8 @@ class Student_details(models.Model):
     department = models.CharField(max_length=255,null=False)
     password = models.CharField(null=False,max_length=50)
     slug = models.SlugField(null=False,unique = True)
-
+    def __str__(self):
+        return str(self.student_id)
     
     def get_absolute_url(self):
         return reverse("student_page", kwargs={"slug": self.slug})

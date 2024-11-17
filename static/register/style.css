@@ -689,7 +689,7 @@ section ul {
 }
 
 
-.nice-form-group > input[type=checkbox], .nice-form-group > input[type=number], .nice-form-group > input[type=email], .nice-form-group > input[type=month], .nice-form-group > input[type=number], .nice-form-group > input[type=password], .nice-form-group > input[type=radio], .nice-form-group > input[type=search], .nice-form-group > input[type=tel], .nice-form-group > input[type=text], .nice-form-group > input[type=time], .nice-form-group > input[type=url], .nice-form-group > input[type=week], .nice-form-group > select, .nice-form-group > textarea {
+.nice-form-group > input[type=checkbox],.nice-form-group > input[type=number], .nice-form-group > input[type=email], .nice-form-group > input[type=month], .nice-form-group > input[type=number], .nice-form-group > input[type=password], .nice-form-group > input[type=radio], .nice-form-group > input[type=search], .nice-form-group > input[type=tel], .nice-form-group > input[type=text], .nice-form-group > input[type=time], .nice-form-group > input[type=url], .nice-form-group > input[type=week], .nice-form-group > select, .nice-form-group > textarea {
   background: var(--nf-input-background-color);
   font-family: inherit;
   font-size: var(--nf-input-font-size);
@@ -710,5 +710,29 @@ section ul {
   transition: all 0.15s ease-out;
   --icon-padding:calc(var(--nf-input-size)*2.25);
   --icon-background-offset:calc(var(--nf-input-size)*0.75);
+}
+.nice-form-group >  .select2-container--default .select2-selection{
+  background: var(--nf-input-background-color);
+  font-family: inherit;
+  font-size: var(--nf-input-font-size);
+  border-bottom-width: var(--nf-input-border-width);
+  font-family: var(--nf-input-font-family);
+  box-shadow: none;
+  border-radius: var(--nf-input-border-radius);
+  border: var(--nf-input-border-width) var(--nf-input-border-style) var(--nf-input-border-color);
+  border-bottom: var(--nf-input-border-bottom-width) var(--nf-input-border-style) var(--nf-input-border-color);
+  color: var(--nf-input-color);
+  width: 100%;
+  padding: calc(var(--nf-input-size)*0.75);
+  height: calc(var(--nf-input-size)*2.75);
+  line-height: normal;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: all 0.15s ease-out;
+  --icon-padding:calc(var(--nf-input-size)*2.25);
+  --icon-background-offset:calc(var(--nf-input-size)*0.75);
+  background-color: #2538df;
+  height: 40px;
 }
 
