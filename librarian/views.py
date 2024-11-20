@@ -8,6 +8,7 @@ from books.models import Books,book_code,loaned_books
 from django.db.models import F,Q,Subquery,OuterRef
 from Users.models import Student_details
 from dal import autocomplete
+import itertools
 ############ Librarian Login ##########################
 def librarian_login(request):
     if request.method == 'POST':
@@ -78,7 +79,18 @@ def add_book_codes(request,slug):
 ################## List out all books #####################
 def list_all_books(request):
     values = Books.objects.all().values()
-    return render(request,'library/list_all_books.html',{"details": values,'username':uname,"url" : url})
+    j = Books.objects.all()
+    values = []
+    for i in j:
+        j = i.__dict__
+        if i.studentname.all():
+            i=i.studentname.all().values_list('student_id')
+            v = list(itertools.chain(*i))
+            j["Studentname"] = ", ".join(list(map(str,v)))
+        else:
+            j["Studentname"] = "Nil"
+        values.append(j)
+    return render(request,'library/list_all_books.html',{"details": values,'username':uname,"url" : url,'id':emp_id})
 
 #################### search books based on author,title or date ####################
 def search_books(request,str):
