@@ -24,12 +24,30 @@
         </div>
         {{ field }}
       </div>
+      {% if  Errors and  Errors == field.label.title %}
+      <div style='margin : 0.5rem; color:red; font-size:15px'>
+        
+        {% if field.label.title == 'Student Id' %}
+          Student ID already Exists.Please Login.
+        {% else %}
+        {{ Errors }} already exists.
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% for field in form1 %}
+      <div class="nice-form-group">
+        <div class="nice-form-group" >
+        <label>{{ field.label |title }}</label>
+        </div>
+        {{ field }}
+      </div>
       {% if  Errors and Errors == field.label.title %}
       <div style='margin : 0.5rem; color:red; font-size:15px'>
-        {% if field.label.title == 'Password' %}
+        {% if field.label.title == 'Confirm Password' %}
           <p>Password doesn't match.</p>
         {% else %}
-          {{ Errors }} already Exists.
+          Year should be in between 1 and 4
         {% endif %}
       </div>
       {% endif %}
