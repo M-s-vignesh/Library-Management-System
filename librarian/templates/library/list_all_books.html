@@ -16,7 +16,7 @@
                 <a href="{{ url }}" class="nav-item nav-link">Home</a>
                 <a href="#" class="nav-item nav-link">Profile</a>
             </div>
-            <a href="{% url 'login' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+            <a href="{% url 'log_out' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
         </div>
     </nav>
 </div>
@@ -28,14 +28,7 @@
     <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
     <input type="text" class="input-search" name='search' required placeholder="Enter Book Title...">
 </div>
-</form>`  
-{% if messages %}
-{% for message in messages %}
-	<div id = 'message_container' style ='height : 60px' >
-    <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
-    </div>
-{% endfor %}
-{% endif %}
+</form>`
 {% elif author %}
 <link rel="stylesheet" href="{% static 'books/search.css' %}">
 <form method ='POST' action = '/Search-Book-By-Author'>
@@ -45,13 +38,6 @@
     <input type="text" class="input-search" name='search' required placeholder="Enter Book Author...">
 </div>
 </form>`
-{% if messages %}
-{% for message in messages %}
-	<div id = 'message_container' style ='height : 60px' >
-    <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
-    </div>
-{% endfor %}
-{% endif %}
 {% elif date %}
 <link rel="stylesheet" href="{% static 'books/search.css' %}">
 <form method ='POST' action = '/Search-Book-By-Published-Date'>
@@ -60,18 +46,14 @@
     <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
     <input type="date" class="input-search" name='search' required >
 </div>
-</form>`    
-{% if messages %}
-{% for message in messages %}
-	<div id = 'message_container' style ='height : 60px' >
-    <p class="text-danger" style = 'text-align : center;'>{{ message }}</p>
-    </div>
-{% endfor %}
+</form>`
 {% endif %}
+<link rel="stylesheet" href="{% static 'books/table.css' %}">
+{% if title  or  author or date %}
+<div class="container" style='min-height: 60px;'>
+{% else %}
+<div class="container" style='min-height: 250px;'>
 {% endif %}
-    <link rel="stylesheet" href="{% static 'books/table.css' %}">
-<div class="container" style='min-height: 150px;'>
-	
 	<div class="table">
 		<div class="table-header">
 			<div class="header__item"><a id="title" class="filter__link" href="#">Title</a></div>
@@ -81,33 +63,68 @@
             <div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Current Copies</a></div>
 			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Loaned Students</a></div>
         </div>
-		<div class="table-content">	
+		<div class="table-content">
             {% for detail in details %}
-			<div class="table-row">		
+			<div class="table-row">
 				<div class="table-data">{{ detail.title }}</div>
 				<div class="table-data">{{ detail.author }}</div>
 				<div class="table-data">{{ detail.published_date }}</div>
 				<div class="table-data">{{ detail.no_of_copies }}</div>
                 <div class="table-data">{{ detail.current_copies }}</div>
 				<div class="table-data">{{ detail.Studentname }}</div>
-			
+
 			</div>
             {% endfor %}
-		</div>	
+		</div>
 	</div>
-</div>
 
+</div>
+{% if messages %}
+<link rel="stylesheet" href="{% static 'books/search.css' %}">
+	{% for message in messages %}
+		<div id = 'message_container' style ='height : 60px;'>
+			<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+				<symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+				  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+				</symbol>
+				<symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+				  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+				</symbol>
+				<symbol id="info-fill" viewBox="0 0 16 16">
+				  <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+				</symbol>
+			  </svg>
+			  {% if message.tags == 'success' %}
+			  <div class="alert alert-{{ message.tags }} d-flex align-items-center" role="alert">
+				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="{{ message.tags.title }}:"><use xlink:href="#check-circle-fill"/></svg>
+				<div>
+				{% elif message.tags == 'info' %}
+				  <div class="alert alert-{{ message.tags }} d-flex align-items-center" role="alert">
+					<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="{{ message.tags.title }}:"><use xlink:href="#info-fill"/></svg>
+					<div>
+			  {% else %}
+			  <div class="alert alert-{{ message.tags }} d-flex align-items-center" role="alert" style='width : 30%; margin-left: auto;margin-right: auto;'>
+				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="{{ message.tags.title }}:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+				<div >
+				{% endif %}
+
+		{{ message }}
+		</div>
+	</div>
+	</div>
+	{% endfor %}
+	{% endif %}
 {% endblock %}
 {% block script %}
 <script>
 var properties = [
 	'title',
 	'published_date',
-	
+
 ];
 
 $.each( properties, function( i, val ) {
-	
+
 	var orderClass = '';
 
 	$("#" + val).click(function(e){
@@ -130,14 +147,14 @@ $.each( properties, function( i, val ) {
 		var rows = $table.find('.table-row').get();
 		var isSelected = $(this).hasClass('filter__link--active');
 		var isNumber = $(this).hasClass('filter__link--number');
-			
+
 		rows.sort(function(a, b){
 
 			var x = $(a).find('.table-data').eq(index).text();
     			var y = $(b).find('.table-data').eq(index).text();
-				
+
 			if(isNumber == true) {
-    					
+
 				if(isSelected) {
 					return x - y;
 				} else {
@@ -145,8 +162,8 @@ $.each( properties, function( i, val ) {
 				}
 
 			} else {
-			
-				if(isSelected) {		
+
+				if(isSelected) {
 					if(x < y) return -1;
 					if(x > y) return 1;
 					return 0;
@@ -170,8 +187,8 @@ $.each( properties, function( i, val ) {
 <script>
     var message_ele = document.getElementById("message_container");
 
-setTimeout(function(){ 
-   message_ele.style.display = "none"; 
+setTimeout(function(){
+   message_ele.style.display = "none";
 }, 3000);
 </script>
 {% endblock %}

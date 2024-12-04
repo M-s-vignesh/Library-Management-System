@@ -13,10 +13,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{{ get_absolute_url }}" class="nav-item nav-link">Home</a>
+                <a href="{{ url }}" class="nav-item nav-link">Home</a>
                 <a href="#" class="nav-item nav-link">Profile</a>
             </div>
-            <a href="{% url 'login' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+            <a href="{% url 'log_out' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
         </div>
     </nav>
 </div>
@@ -24,7 +24,7 @@
         <div class="container-fluid features overflow-hidden py-5">
             <div class="container">
                 <div class="section-title text-center mb-5 wow fadeInUp">
-                    
+
                 </div>
                 <div class="row g-4 justify-content-center text-center">
                     <a href = "{{ id.get_absolute_url | add:'search-books' }}" ><div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
@@ -44,7 +44,7 @@
                             </div>
                             <div class="feature-content d-flex flex-column">
                                 <h5 class="mb-3">Add Book</h5>
-                                
+
                             </div>
                         </div></a>
                     </div>
@@ -59,7 +59,7 @@
                         </div></a>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
-                        <a href = '{% url "list_all_books" %}'><div class="feature-item text-center p-4">
+                        <a href = "{{ id.get_absolute_url | add:'List-All-Books' }}"><div class="feature-item text-center p-4">
                             <div class="feature-icon p-3 mb-4">
                                 <i class="fa fa-list" style="font-size:54px"></i>
                             </div>
@@ -74,7 +74,7 @@
                                 <i class="far fa-trash-alt" style="font-size:54px"></i>
                             </div>
                             <div class="feature-content d-flex flex-column">
-                                <h5 class="mb-3">Remove Book</h5>
+                                <h5 class="mb-3">Students</h5>
                             </div>
                         </div></a>
                     </div>
