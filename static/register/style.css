@@ -732,7 +732,6 @@ section ul {
   transition: all 0.15s ease-out;
   --icon-padding:calc(var(--nf-input-size)*2.25);
   --icon-background-offset:calc(var(--nf-input-size)*0.75);
-  background-color: #2538df;
   height: 40px;
 }
 

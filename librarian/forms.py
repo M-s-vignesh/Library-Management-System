@@ -33,6 +33,13 @@ class Return(forms.Form):
                                         attrs={'class' : 'form-control',}
             ))
     book_title = forms.ModelChoiceField(queryset=Books.objects.all(),widget = autocomplete.Select2(
-                                        url='book-title-autocomplete',forward=['student_ids'],
+                                        url='return-book-autocomplete',forward=['student_ids'],
                                         attrs={'class' : 'form-control'}
+            ))
+
+class Delete_Book(forms.Form):
+    book_title = forms.ModelChoiceField(queryset=Books.objects.all(),
+                                         widget = autocomplete.Select2(
+                                        url='book-title-autocomplete',
+                                        attrs={'class' : 'form-control',}
             ))
