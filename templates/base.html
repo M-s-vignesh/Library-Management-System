@@ -12,7 +12,7 @@
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
         <!-- Icon Font Stylesheet -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
@@ -28,14 +28,14 @@
 
         <!-- Template Stylesheet -->
         <link href="{% static 'login/style.css' %}" rel="stylesheet">
-        
+
     </head>
 
     <body>
         <!-- Topbar Start -->
         <div class="container-fluid bg-primary px-5 d-none d-lg-block">
             <div class="row gx-0 align-items-center">
-                <div class="col-lg-5 text-center text-lg-start mb-lg-0">  
+                <div class="col-lg-5 text-center text-lg-start mb-lg-0">
                 </div>
                 <div class="col-lg-3 row-cols-1 text-center mb-2 mb-lg-0">
                 </div>
@@ -53,11 +53,12 @@
         {% block content%}
         {% endblock %}
         <!-- Features Start -->
-        
+
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="{% static 'lib/wow/wow.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% block script %}
     {% endblock %}
     </body>

@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponseRedirect,HttpResponse
-from . forms import Login,loan,Return
+from . forms import Login,loan,Return,Delete_Book
 from . models import Librarian_Profile,User
 from django.contrib import messages
 from django.urls import reverse
@@ -113,10 +113,16 @@ def add_book_codes(request,slug):
             if form.is_valid():
                 book_name = form.cleaned_data['book']
                 code = form.cleaned_data['code_no']
-                form.save()
-                Books.objects.filter(title=book_name).update(coded_books=F('coded_books') + 1)
-                messages.add_message(request, messages.SUCCESS,"Code - "+str(code)+" added to Book - "+str(book_name)+" Succesfully.")
-                return HttpResponseRedirect(get_url(request)+'Add-Book-Codes')
+                code_values = book_code.objects.values_list('code_no',flat=True)
+                if code not  in code_values:
+                    book_code.objects.create(code_no = int(code),
+                                            book = book_name)
+                    Books.objects.filter(title=book_name).update(coded_books=F('coded_books') + 1)
+                    messages.add_message(request, messages.SUCCESS,"Code - "+str(code)+" added to Book - "+str(book_name)+".")
+                    return HttpResponseRedirect(get_url(request)+'Add-Book-Codes')
+                form = AddBookCode(request.POST)
+                messages.add_message(request, messages.ERROR, 'Code already mapped to a book, please select another code.')
+                return render(request,'library/add_book_codes.html',{'form': form,'username':Username(request),"url" : get_url(request),})
             else:
                 form = AddBookCode(request.POST)
                 messages.add_message(request, messages.ERROR, 'Code already mapped to a book, please select another code.')
@@ -203,7 +209,7 @@ def loan_books(request):
                                     bk2_name = book_code.objects.get(id=bk_id).book
                                     if bk2_name.title == bk_name:
                                         form = loan()
-                                        messages.add_message(request, messages.ERROR,'Student Id - '+str(student_id)+' already loaned the book '+bk_name+'.This Book can"t be loaned.')
+                                        messages.add_message(request, messages.ERROR,'Student Id - '+str(student_id)+' already loaned the book '+bk_name+'.This Book cant be loaned.')
                                         return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request),})
                             map_book = Books.objects.filter(id=book_name.id)[0]
                             student = stu_exists[0]
@@ -211,7 +217,7 @@ def loan_books(request):
                             Books.objects.filter(id=book_name.id).update(current_copies = F('current_copies') - 1)
                             book_code.objects.filter(code_no = code.code_no).update(loaned = True)
                             loaned_books.objects.create(student_id = student_id,student_book_code_id = code.id)
-                            messages.add_message(request, messages.SUCCESS,book_name.title+" loaned to Student "+student_name+"("+str(student_id)+") Succesfully.")
+                            messages.add_message(request, messages.SUCCESS,book_name.title+" loaned to Student "+student_name+"("+str(student_id)+") .")
                             return HttpResponseRedirect('Loan-Book')
 
                         else:
@@ -223,11 +229,11 @@ def loan_books(request):
                         messages.add_message(request, messages.ERROR, 'Student Id - '+str(student_id)+' doesn"t Exists. Please Enter correct Id.')
                         return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request),})
                 form = loan()
-                messages.add_message(request, messages.ERROR,"Something went wrong !!! Please try again.")
+                messages.add_message(request, messages.ERROR,"Please try again...!")
                 return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request)})
             else:
                 form = loan(request.POST)
-                messages.add_message(request, messages.ERROR,"Something went wrong !!! Please try again.")
+                messages.add_message(request, messages.ERROR,"Please try again...!")
                 return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request)})
         else:
             form = loan()
@@ -261,19 +267,61 @@ def return_book(request):
                                 messages.add_message(request, messages.SUCCESS,str(book_name)+" returned from "+st_val.get_short_name()+"("+str(val)+") to Library.")
                                 return HttpResponseRedirect('Return-Book')
                 form = Return()
-                messages.add_message(request, messages.ERROR,"Something Went Wrong...!")
+                messages.add_message(request, messages.ERROR,"Please try again...!")
                 return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
 
             else:
                 print(form.errors.as_data())
                 form = Return()
-                messages.add_message(request, messages.ERROR,"Something Went Wrong...!")
+                messages.add_message(request, messages.ERROR,"Please try again...!")
                 return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
         form = Return()
         return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
     return HttpResponseRedirect('/')
 
-class BookTitleAutocomplete(autocomplete.Select2QuerySetView):
+def list_students(request):
+    if request.user.is_authenticated:
+        student = Student_details.objects.all()
+        result = []
+        for i in student:
+            details = i.__dict__
+            if i.students.all():
+                j = i.students.all().values_list('title')
+                v = list(itertools.chain(*j))
+                details['loaned_books'] = ','.join(v)
+            else:
+                details['loaned_books'] = 'No Books Loaned'
+            details['student_id'] = i.user.Emp_ID
+            details['email'] = i.user.email
+            details['first_name'] = i.user.first_name
+            details['last_name'] = i.user.last_name
+            result.append(details)
+        return render(request, 'library/list_students.html',{'username' : Username(request), 'url' : get_url(request), 'details' : result})
+    return HttpResponseRedirect('/')
+
+def delete_books(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = Delete_Book(request.POST)
+            if form.is_valid():
+                book_title = form.cleaned_data['book_title']
+                book_id = book_title.id
+                value = book_code.objects.filter(loaned=True).values_list('book_id',)
+                book_ids = list(itertools.chain(*value))
+                if book_id not in book_ids:
+                    messages.success(request, str(book_title)+' deleted.')
+                    Books.objects.filter(id=book_id).delete()
+                    form = Delete_Book()
+                    return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
+                else:
+                    messages.add_message(request, messages.ERROR, str(book_title)+" is loaned, cant be deleted !!")
+                    form = Delete_Book()
+                    return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
+        form = Delete_Book()
+        return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
+    return HttpResponseRedirect('/')
+
+class ReturnBookAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
         qs = loaned_books.objects.all()
@@ -320,5 +368,14 @@ class StudentIdAutocomplete(autocomplete.Select2QuerySetView):
         qs = Student_details.objects.all()
         if self.q:
             qs = qs.filter(user__Emp_ID__istartswith=self.q)
+        return qs
+
+class BookTitleAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+
+        qs = Books.objects.all()
+        if self.q:
+            qs = qs.filter(title__istartswith=self.q)
         return qs
 
