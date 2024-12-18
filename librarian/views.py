@@ -99,6 +99,17 @@ def add_books(request,slug):
                 return HttpResponseRedirect(get_url(request)+'Add-Books')
             else:
                 form = AddBook(request.POST)
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/add_books.html',{'form': form,'username':Username(request),"url" : get_url(request),})
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/add_books.html',{'form': form,'username':Username(request),"url" : get_url(request),})
                 messages.add_message(request, messages.ERROR, 'Book already Exists.')
                 return render(request,'library/add_books.html',{'form': form,'username':Username(request),"url" : get_url(request),})
         form = AddBook()
@@ -125,6 +136,17 @@ def add_book_codes(request,slug):
                 return render(request,'library/add_book_codes.html',{'form': form,'username':Username(request),"url" : get_url(request),})
             else:
                 form = AddBookCode(request.POST)
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/add_book_codes.html',{'form': form,'username':Username(request),"url" : get_url(request),})
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/add_book_codes.html',{'form': form,'username':Username(request),"url" : get_url(request),})
                 messages.add_message(request, messages.ERROR, 'Code already mapped to a book, please select another code.')
                 return render(request,'library/add_book_codes.html',{'form': form,'username':Username(request),"url" : get_url(request),})
         form = AddBookCode()
@@ -209,7 +231,7 @@ def loan_books(request):
                                     bk2_name = book_code.objects.get(id=bk_id).book
                                     if bk2_name.title == bk_name:
                                         form = loan()
-                                        messages.add_message(request, messages.ERROR,'Student Id - '+str(student_id)+' already loaned the book '+bk_name+'.This Book cant be loaned.')
+                                        messages.add_message(request, messages.ERROR,'Student Id - '+str(student_id)+' already loaned '+bk_name+'.')
                                         return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request),})
                             map_book = Books.objects.filter(id=book_name.id)[0]
                             student = stu_exists[0]
@@ -217,7 +239,7 @@ def loan_books(request):
                             Books.objects.filter(id=book_name.id).update(current_copies = F('current_copies') - 1)
                             book_code.objects.filter(code_no = code.code_no).update(loaned = True)
                             loaned_books.objects.create(student_id = student_id,student_book_code_id = code.id)
-                            messages.add_message(request, messages.SUCCESS,book_name.title+" loaned to Student "+student_name+"("+str(student_id)+") .")
+                            messages.add_message(request, messages.SUCCESS,book_name.title+" loaned to "+student_name+"("+str(student_id)+") .")
                             return HttpResponseRedirect('Loan-Book')
 
                         else:
@@ -233,6 +255,17 @@ def loan_books(request):
                 return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request)})
             else:
                 form = loan(request.POST)
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request)})
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request)})
                 messages.add_message(request, messages.ERROR,"Please try again...!")
                 return render(request,'library/loaned.html',{'form':form,'username':Username(request),"url" : get_url(request)})
         else:
@@ -271,8 +304,18 @@ def return_book(request):
                 return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
 
             else:
-                print(form.errors.as_data())
-                form = Return()
+                form = Return(request.POST)
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
                 messages.add_message(request, messages.ERROR,"Please try again...!")
                 return render(request,'library/return_book.html',{'form':form,'username':Username(request),"url" : get_url(request)})
         form = Return()
@@ -317,6 +360,19 @@ def delete_books(request):
                     messages.add_message(request, messages.ERROR, str(book_title)+" is loaned, cant be deleted !!")
                     form = Delete_Book()
                     return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
+            else:
+                form = Delete_Book(request.POST)
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
         form = Delete_Book()
         return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
     return HttpResponseRedirect('/')
