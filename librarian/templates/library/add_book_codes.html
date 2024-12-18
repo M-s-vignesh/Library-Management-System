@@ -89,7 +89,8 @@
       </div>
       {% endfor %}
       <div style = 'margin-top : 25px;'>
-      <button type="submit" class="btn" style = 'width: 100px;
+      <button type="submit" class="btn"
+       style = 'width: 100px;
       margin:0 auto;
     display:block;
     height: 40px;
@@ -121,10 +122,12 @@
               event.preventDefault(); // Prevent the default form submission
 
               const form = this.closest(".add-form"); // Get the associated form
-
+              const codeno = form.querySelector('[name="code_no"]').value;
+              const bookName = form.querySelector('[name="book"]').options[form.querySelector('[name="book"]').selectedIndex].text;
+              console.log('Book Name:', bookName);
               Swal.fire({
                   title: 'Are you sure?',
-                  text: "Do you want add this code to this book?",
+                  text: `Do you want to add code - "${codeno}" to "${bookName}"?`,
                   icon: 'question',
                   showCancelButton: true,
                   confirmButtonColor: '#3085d6',
