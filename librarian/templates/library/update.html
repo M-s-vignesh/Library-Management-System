@@ -1,12 +1,11 @@
-{% extends 'base.html' %}
-{# Don't forget that one ! #}
+{% extends "base.html" %}
 {% load static %}
-
 {% block content %}
-<div class="container-fluid nav-bar p-0">
+
+ <div class="container-fluid nav-bar p-0">
     <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
         <a href="" class="navbar-brand p-0">
-            <h1 class="display-5 text-secondary m-0">Hi {{ username }}</h1>
+            <h1 class="display-5 text-secondary m-0">Hi {{ username }} </h1>
             <!-- <img src="img/logo.png" alt="Logo"> -->
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -39,7 +38,7 @@
         });
     </script>
     {% endif %}
-<form class="delete-form" action="{% url 'delete_books' %}" method='POST' >
+<form action = "" class = "update-form" method='POST'>
     {% csrf_token %}
 
     <div class="demo-page">
@@ -47,12 +46,10 @@
         <section>
           <div class="href-target" id="input-types"></div>
           <h1 style = 'text-align : center'>
-            Delete Book
+            Profile
           </h1>
           {% for field in form %}
-
           <link rel="stylesheet" href="{% static 'register/style.css' %}">
-
           <div class="nice-form-group">
             <div class="nice-form-group" >
             <label>{{ field.label |title }}</label>
@@ -93,9 +90,10 @@
             {{ field }}
 
           </div>
-           {% endfor %}
+
+          {% endfor %}
           <div style = 'margin-top : 25px;'>
-          <button type="submit" class="delete-button"  style = 'width: 100px;
+          <button type="submit" class="btn" style = 'width: 100px;
           margin:0 auto;
         display:block;
         height: 40px;
@@ -109,51 +107,36 @@
         box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
         position: relative;
         overflow: hidden;
-        cursor: pointer;' >Delete</button>
+        cursor: pointer;'>Submit</button>
         <div>
     </div>
     </form>
 {% endblock %}
 {% block script %}
 
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Add event listeners to all delete buttons
+      document.querySelectorAll(".btn").forEach(button => {
+          button.addEventListener("click", function (event) {
+              event.preventDefault(); // Prevent the default form submission
 
-{{ form.media }}
-
-    <script>
-      var message_ele = document.getElementById("message_container");
-
-    setTimeout(function(){
-     message_ele.style.display = "none";
-    }, 5000);
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Add event listeners to all delete buttons
-            document.querySelectorAll(".delete-button").forEach(button => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault(); // Prevent the default form submission
-
-                    const form = this.closest(".delete-form"); // Get the associated form
-                    const bookName = form.querySelector('[name="book_title"]').options[form.querySelector('[name="book_title"]').selectedIndex].text;
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: `Do you want to delete - ${bookName} ?`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit(); // Submit the form only after confirmation
-                        }
-                    });
-                });
-            });
-        });
-    </script>
+              const form = this.closest(".update-form"); // Get the associated form
+              Swal.fire({
+                  title: 'Are you sure?',
+                  text:  `Do you want to Update?`,
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Update'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      form.submit(); // Submit the form only after confirmation
+                  }
+              });
+          });
+      });
+  });
+</script>
 {% endblock %}
-
-

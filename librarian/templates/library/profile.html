@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid nav-bar p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{{ url }}" class="nav-item nav-link">Home</a>
+            </div>
+            <a href="{% url 'log_out' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
+        </div>
+    </nav>
+</div>
+<div class="container-fluid features overflow-hidden py-5" style = 'padding-top: 1rem !important;padding-bottom: 1rem !important;'>
+<link rel="stylesheet" href="{% static 'profile/profile.css' %}">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center">
+<div class="col-xl-6 col-md-12" >
+            <div class="card user-card-full">
+                <div class="row m-l-0 m-r-0">
+                    <div class="col-sm-4 bg-c-lite-green user-profile">
+                        <div class="card-block text-center text-white">
+                            <div class="m-b-25">
+                                <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
+                            </div>
+                            <h6 class="f-w-600">{{ username.title }}</h6>
+                            <p>Librarian</p>
+                            <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="card-block">
+                            <h5 class="m-b-20 p-b-5 b-b-default f-w-600">Information</h5>
+                                <div class="col-sm-6" style = 'width:100%;' >
+                                    <p class="m-b-10 f-w-600"><strong>Email</strong></p>
+                                    <h6 class="text-muted f-w-400">{{ email }}</h6>
+                                </div>
+                            <div class="col-sm-6" style = 'width:100%;'>
+                                <p class="m-b-10 f-w-600" ><strong>Phone</strong></p>
+                                    <h6 class="text-muted f-w-400">{{ phone }}</h6>
+                            </div>
+                                <div class="col-sm-6" style = 'width:100%;'>
+                                    <p class="m-b-10 f-w-600"><strong>Employee Id</strong></p>
+                                    <h6 class="text-muted f-w-400">{{ empid }}</h6>
+                                </div>
+                                <div class="col-sm-6" style = 'width:100%;'>
+                                    <p class="m-b-10 f-w-600"><strong>Address</strong></p>
+                                    <h6 class="text-muted f-w-400">{{ address }}</h6>
+                                </div>
+                                <div style="display: flex;">
+                                <div style = 'margin-top : 25px; flex: 1; padding: 10px; '>
+                                    <button type="submit" class="btn" onclick="location.href='{{ url | add:'Update-Profile'}}'" style = 'width: 100px;
+                                    margin:0 auto;
+                                  display:block;
+                                  height: 40px;
+                                  border: none;
+                                  outline: none;
+                                  background: rgb(121, 229, 198);;
+                                  color: #fff;
+                                  font-size: 15px;
+                                  border-radius: 40px;
+                                  text-align: center;
+                                  box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+                                  position: relative;
+                                  overflow: hidden;
+                                  cursor: pointer;'>Update</button>
+                              </div>
+                              <div style = 'margin-top : 25px; flex: 1; padding: 10px; '>
+                                <button type="submit" class="btn"  onclick="location.href=
+                                '{{ url | add:'Reset-Password'}}'"
+                                style = 'width: 150px;
+                                margin:0 auto;
+                              display:block;
+                              height: 40px;
+                              border: none;
+                              outline: none;
+                              background: rgb(121, 229, 198);;
+                              color: #fff;
+                              font-size: 15px;
+                              border-radius: 40px;
+                              text-align: center;
+                              box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+                              position: relative;
+                              overflow: hidden;
+                              cursor: pointer;'>Reset Password</button>
+                          </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

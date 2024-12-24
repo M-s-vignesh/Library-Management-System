@@ -1,4 +1,9 @@
-from django.shortcuts import render,HttpResponseRedirect,HttpResponse
+from django.shortcuts import (
+    render,
+    HttpResponseRedirect,
+    HttpResponse,
+    )
+from django.http import JsonResponse
 from . forms import Login,loan,Return,Delete_Book
 from . models import Librarian_Profile,User
 from django.contrib import messages
@@ -11,8 +16,10 @@ from dal import autocomplete
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.sessions.models import Session
 from django.contrib.auth.backends import BaseBackend
-import itertools
-from . forms import Login
+import itertools,re
+from . forms import Login,Update_Details,Reset_Password
+from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 # ############ Librarian Login ##########################
 def log_out(request):
     logout(request)
@@ -22,6 +29,9 @@ def log_out(request):
 def Username(request):
     if request.user.is_authenticated:
         return request.user.get_short_name()
+    logout(request)
+    Session.objects.filter(session_key = request.session.session_key).delete()
+    return HttpResponseRedirect('/')
 
 
 def get_url(request):
@@ -375,6 +385,99 @@ def delete_books(request):
                         return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
         form = Delete_Book()
         return render(request, 'library/delete_books.html',{'username':Username(request),'url':get_url(request),'form':form})
+    return HttpResponseRedirect('/')
+
+def profile(request):
+    if request.user.is_authenticated:
+        email = request.user.email
+        empid = request.user.Emp_ID
+        phone = Librarian_Profile.objects.filter(user = request.user).values_list('mobile_no',flat=True)[0]
+        if not phone:
+            phone = '-'
+        address = Librarian_Profile.objects.filter(user = request.user).values_list('address',flat=True)[0]
+        if not address:
+            address = '-'
+        context = {'email' : email,'phone':phone,'address':address,'empid':empid,
+                   'username':Username(request),'url':get_url(request)}
+        return render(request, 'library/profile.html',context)
+    return HttpResponseRedirect('/')
+
+def Update(request, slug):
+    """Function updates user profile information"""
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = Update_Details(request.POST)
+            if form.is_valid():
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                email = form.cleaned_data['email']
+                address = form.cleaned_data['address']
+                mobile_number = form.cleaned_data['mobile_no']
+                user_id = request.user.id
+                email_exists = get_user_model().objects.filter(
+                    email=email).exclude(
+                        id=user_id).exists()
+                if email_exists:
+                    messages.error(request, 'Email already taken.')
+                    context = {'form':form, 'username':Username(request),
+                                'url':get_url(request)}
+                    return render(request, 'library/update.html', context)
+                get_user_model().objects.filter(id=user_id).update(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+
+                )
+                Librarian_Profile.objects.filter(user=request.user).update(
+                    mobile_no=mobile_number,
+                    address=address
+                )
+                messages.success(request, 'Profile Updated')
+                return HttpResponseRedirect(reverse(
+                    'update_profile',args=[request.user.Emp_ID])
+                    )
+            else:
+                print(form.errors.as_data())
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        form = Update_Details(request.POST)
+                        context = {'form':form, 'username':Username(request), 'url':get_url(request)}
+                        return render(request, 'library/update.html', context)
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        form = Update_Details(request.POST)
+                        context = {'form':form, 'username':Username(request), 'url':get_url(request)}
+                        return render(request, 'library/update.html', context)
+                return HttpResponseRedirect(reverse('update_profile',args=[request.user.Emp_ID]))
+        else:
+            first_name = request.user.first_name
+            last_name = request.user.last_name
+            email = request.user.email
+            mobile_no = Librarian_Profile.objects.get(user = request.user).mobile_no
+            address = Librarian_Profile.objects.get(user = request.user).address
+            data = {'first_name':first_name,
+                    'last_name':last_name,
+                    'email':email,
+                    'mobile_no':mobile_no,
+                    'address':address,
+                    }
+            form = Update_Details(data)
+            context = {'form':form, 'username':Username(request), 'url':get_url(request)}
+            return render(request, 'library/update.html', context)
+    return HttpResponseRedirect('/')
+
+def reset_password(request, slug):
+    """Function resets user password"""
+    if request.user.is_authenticated:
+        form = Reset_Password()
+        context = {'form':form, 'username':Username(request),
+                    'url':get_url(request)}
+        return render(request, 'library/reset_password.html',context)
     return HttpResponseRedirect('/')
 
 class ReturnBookAutocomplete(autocomplete.Select2QuerySetView):

@@ -21,6 +21,9 @@ urlpatterns = [
     path('book-title-autocomplete/', views.BookTitleAutocomplete.as_view(), name='book-title-autocomplete'),
     path('List-Students/',views.list_students,name = 'list_students'),
     path('Librarian-Delete-Book/', views.delete_books, name = 'delete_books'),
+    path('Librarian/Profile', views.profile, name = 'librarian_profile'),
+    path('Librarian/<slug:slug>/Update-Profile', views.Update, name = 'update_profile'),
+    path('Librarian/<slug:slug>/Reset-Password', views.reset_password, name = 'reset_password'),
 
  ]
 

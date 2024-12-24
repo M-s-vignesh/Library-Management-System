@@ -3,6 +3,7 @@ from books.models import Books,book_code,loaned_books
 from Users.models import Student_details
 from django.db.models import F,Q,Subquery
 from dal import autocomplete
+from django.core.exceptions import ValidationError
 
 
 class Login(forms.Form):
@@ -43,3 +44,25 @@ class Delete_Book(forms.Form):
                                         url='book-title-autocomplete',
                                         attrs={'class' : 'form-control',}
             ))
+    
+class Update_Details(forms.Form):
+    first_name = forms.CharField(max_length=255, required=True)
+    last_name = forms.CharField(max_length=255, required=True)
+    email = forms.EmailField(max_length=255,required=True)
+    mobile_no = forms.IntegerField(required=True)
+    address = forms.CharField(max_length=500,required=False)
+
+    def clean_mobile_no(self):
+        mobile_no = self.cleaned_data['mobile_no']
+        mobile_str = str(mobile_no)  # Convert to string for length validation
+
+        if len(mobile_str) != 10:
+            raise forms.ValidationError("Mobile number must be exactly 10 digits long.")
+
+        return mobile_no
+    
+class Reset_Password(forms.Form):
+    old_password = forms.CharField(max_length=128, widget=forms.PasswordInput)
+    new_password = forms.CharField(max_length=128, widget=forms.PasswordInput)
+    confirm_password = forms.CharField(max_length=128, widget=forms.PasswordInput)
+ 
