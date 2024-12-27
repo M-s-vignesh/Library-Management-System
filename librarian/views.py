@@ -20,6 +20,8 @@ import itertools,re
 from . forms import Login,Update_Details,Reset_Password
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password, make_password
+
 # ############ Librarian Login ##########################
 def log_out(request):
     logout(request)
@@ -266,7 +268,7 @@ def loan_books(request):
             else:
                 form = loan(request.POST)
                 errors = form.errors.as_data()
-                for key,value in errors.items():
+                for key,value in errors.items(): 
                     err = list(value[0])[0]
                     if err == 'This field is required.':
                         err = key.replace('_',' ').capitalize()+' is required.'
@@ -437,7 +439,6 @@ def Update(request, slug):
                     'update_profile',args=[request.user.Emp_ID])
                     )
             else:
-                print(form.errors.as_data())
                 errors = form.errors.as_data()
                 for key,value in errors.items():
                     err = list(value[0])[0]
@@ -451,9 +452,11 @@ def Update(request, slug):
                         err = err.capitalize()
                         messages.add_message(request, messages.ERROR, err)
                         form = Update_Details(request.POST)
-                        context = {'form':form, 'username':Username(request), 'url':get_url(request)}
+                        context = {'form':form, 'username':Username(request),
+                                    'url':get_url(request)}
                         return render(request, 'library/update.html', context)
-                return HttpResponseRedirect(reverse('update_profile',args=[request.user.Emp_ID]))
+                return HttpResponseRedirect(reverse('update_profile',
+                                                    args=[request.user.Emp_ID]))
         else:
             first_name = request.user.first_name
             last_name = request.user.last_name
@@ -474,6 +477,57 @@ def Update(request, slug):
 def reset_password(request, slug):
     """Function resets user password"""
     if request.user.is_authenticated:
+        if request.method == "POST":
+            form = Reset_Password(request.POST)
+            if form.is_valid():
+                old_password = form.cleaned_data['old_password']
+                new_password = form.cleaned_data['new_password']
+                confirm_password = form.cleaned_data['confirm_password']
+                old_pass = get_user_model().objects.get(
+                                id=request.user.id).password
+                if not check_password(old_password, old_pass):
+                    messages.add_message(
+                                        request, 
+                                        messages.ERROR, 
+                                        'Please Provide Correct Old Password')
+                    return HttpResponseRedirect(reverse('reset_password',
+                                                    args=[request.user.Emp_ID]))
+                if not new_password == confirm_password:
+                    messages.add_message(
+                                        request, 
+                                        messages.ERROR, 
+                                        'Password Mismatch !!')
+                    return HttpResponseRedirect(reverse('reset_password',
+                                                    args=[request.user.Emp_ID]))
+                hashed_password = make_password(new_password)
+                get_user_model().objects.filter(
+                                id=request.user.id).update(
+                                    password=hashed_password
+                                )
+                return render(request, 'library/reset_password.html', {
+                    'success': True,  # This flag is used in the template to trigger SweetAlert
+                    'username': Username(request),
+                    'url': get_url(request),
+                    'form': form,
+                })
+            else:
+                errors = form.errors.as_data()
+                for key,value in errors.items():
+                    err = list(value[0])[0]
+                    if err == 'This field is required.':
+                        err = key.replace('_',' ').capitalize()+' is required.'
+                        messages.add_message(request, messages.ERROR, err)
+                        context = {'form':form, 'username':Username(request),
+                                    'url':get_url(request)}
+                        return render(request, 'library/reset_password.html', context)
+                    else:
+                        err = err.capitalize()
+                        messages.add_message(request, messages.ERROR, err)
+                        context = {'form':form, 'username':Username(request),
+                                    'url':get_url(request)}
+                        return render(request, 'library/reset_password.html', context)
+                return HttpResponseRedirect(reverse('reset_password',
+                                                    args=[request.user.Emp_ID]))
         form = Reset_Password()
         context = {'form':form, 'username':Username(request),
                     'url':get_url(request)}

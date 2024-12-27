@@ -62,7 +62,13 @@ class Update_Details(forms.Form):
         return mobile_no
     
 class Reset_Password(forms.Form):
-    old_password = forms.CharField(max_length=128, widget=forms.PasswordInput)
-    new_password = forms.CharField(max_length=128, widget=forms.PasswordInput)
-    confirm_password = forms.CharField(max_length=128, widget=forms.PasswordInput)
+    old_password = forms.CharField(max_length=128, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Enter old password'}
+    ))
+    new_password = forms.CharField(max_length=128, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Enter New password'}
+    ))
+    confirm_password = forms.CharField(max_length=128, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Re-Enter Your password'}
+    ))
  
