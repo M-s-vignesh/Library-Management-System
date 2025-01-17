@@ -14,7 +14,7 @@ class Student_details(models.Model):
     def __str__(self):
         return str(self.user.Emp_ID)
     
-    def get_absolute_url(self):
+    def get_url(self):
         return reverse("student_page", kwargs={"slug": self.user.slug})
 
 @classmethod

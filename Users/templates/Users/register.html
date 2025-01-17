@@ -1,4 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -6,9 +8,46 @@
   <title>Registration</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 <link rel="stylesheet" href="{% static 'register\style.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<form action = "{% url 'students_registration' %}" method = post>
+  <div class="container-fluid nav-bar p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0">
+        <a href="" class="navbar-brand p-0">
+            <h1 class="display-5 text-secondary m-0"></h1>
+            <!-- <img src="img/logo.png" alt="Logo"> -->
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+  {% if messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        {% for message in messages %}
+            Swal.fire({
+                icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'danger' %}error{% endif %}",
+                title: "{% if message.tags == 'success' %}Success!{% else %}Error!{% endif %}",
+                text: "{{ message }}",
+                confirmButtonColor: "{% if message.tags == 'success' %}#3085d6{% else %}#d33{% endif %}",
+                confirmButtonText: "OK"
+            }).then(() => {
+                {% if message.tags == 'success' %}
+                    window.location.href = "{% url 'login' %}";
+                {% endif %}
+            });
+        {% endfor %}
+    });
+  </script>
+{% endif %}
+<form action = "{% url 'students_registration' %}" method = post class = 'add-form'>
   {% csrf_token %}
 <div class="demo-page">
   <main class="demo-page-content" style = 'margin: auto; width: 70%; padding: 10px;'>
@@ -73,3 +112,31 @@
 </form>
 </body>
 </html>
+{% endblock %}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Add event listeners to all delete buttons
+      document.querySelectorAll(".btn").forEach(button => {
+          button.addEventListener("click", function (event) {
+              event.preventDefault(); // Prevent the default form submission
+              const form = this.closest(".add-form"); // Get the associated form
+              Swal.fire({
+                  title: 'Are you sure?',
+                  text: `Do you want to Register?`,
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Register'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      form.submit(); // Submit the form only after confirmation
+                  }
+              });
+          });
+      });
+  });
+</script>
+{% endblock %}

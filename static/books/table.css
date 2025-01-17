@@ -1,90 +1,101 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700');
 
-base-spacing-unit:24px;
-half-spacing-unit:$base-spacing-unit / 2;
-
-color-alpha : #1772FF;
-color-form-highlight: #EEEEEE;
+:root {
+    --base-spacing-unit: 24px;
+    --half-spacing-unit: calc(var(--base-spacing-unit) / 2);
+    --color-alpha: #1772FF;
+    --color-form-highlight: #EEEEEE;
+}
 
 *, *:before, *:after {
-	box-sizing:border-box;
+    box-sizing: border-box;
 }
 
 body {
-	padding: base-spacing-unit;
-	font-family:'Source Sans Pro', sans-serif;
-	margin:0;
+    padding: var(--base-spacing-unit);
+    font-family: 'Source Sans Pro', sans-serif;
+    margin: 0;
 }
 
-h1,h2,h3,h4,h5,h6 {
-	margin:0;
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
 }
 
 .container {
-	max-width: 1000px;
-	margin-right:auto;
-	margin-left:auto;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	min-height:300px;
+    max-width: 1000px;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
 }
 
 .table {
-	width:100%;
-	border:1px solid $color-form-highlight;
+    width: 100%;
+    border: 1px solid var(--color-form-highlight);
+    table-layout: fixed; /* Prevents column expansion due to long text */
 }
 
 .table-header {
-	display:flex;
-	width:100%;
-	background:#000;
-	padding:($half-spacing-unit * 1.5) 0;
+    display: flex;
+    width: 100%;
+    background: #000;
+    padding: calc(var(--half-spacing-unit) * 1.5) 0;
 }
 
 .table-row {
-	display:flex;
-	width:100%;
-	padding:($half-spacing-unit * 1.5) 0;
-	
-	&:nth-of-type(odd) {
-		background:$color-form-highlight;
-	}
+    display: flex;
+    width: 100%;
+    padding: calc(var(--half-spacing-unit) * 1.5) 0;
+}
+
+.table-row:nth-of-type(odd) {
+    background: var(--color-form-highlight);
 }
 
 .table-data, .header__item {
-	flex: 1 1 20%;
-	text-align:center;
+    flex: 1 1 20%;
+    text-align: center;
+    overflow: hidden; /* Ensures content stays within the cell */
+    text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+    white-space: nowrap; /* Prevents text wrapping */
+    padding: 8px;
+    position: relative; /* Required for sorting indicator placement */
 }
 
 .header__item {
-	text-transform:uppercase;
+    text-transform: uppercase;
+}
+.filter__link {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    padding-left: var(--base-spacing-unit);
+    padding-right: var(--base-spacing-unit);
 }
 
-.filter__link {
-	color:white;
-	text-decoration: none;
-	position:relative;
-	display:inline-block;
-	padding-left:$base-spacing-unit;
-	padding-right:$base-spacing-unit;
-	
-	&::after {
-		content:'';
-		position:absolute;
-		right:-($half-spacing-unit * 1.5);
-		color:white;
-		font-size:$half-spacing-unit;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-	
-	&.desc::after {
-		content: '(desc)';
-	}
+.filter__link::after {
+    content: '';
+    position: absolute;
+    right: -8px; /* Move the arrow slightly to the right of the text */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em; /* Adjust size of sorting indicator */
+    color: white;
+}
 
-	&.asc::after {
-		content: '(asc)';
-	}
-	
+.filter__link.desc::after {
+    content: '▼'; /* Down arrow for descending */
+}
+
+.filter__link.asc::after {
+    content: '▲'; /* Up arrow for ascending */
+}
+
+/* Enable word wrapping for long text */
+.table-data {
+    word-wrap: break-word; /* Breaks words onto the next line */
+    white-space: normal; /* Allows text wrapping within the cell */
 }

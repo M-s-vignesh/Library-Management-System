@@ -28,7 +28,7 @@
             {% for message in messages %}
                 Swal.fire({
                     icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'danger' %}error{% endif %}",
-                    title: "{% if message.tags == 'success' %}Success!{% else %}Something Went Wrong!{% endif %}",
+                    title: "{% if message.tags == 'success' %}Success!{% else %}Error!{% endif %}",
                     text: "{{ message }}",
                     footer: "{% if message.tags == 'danger' %}Please contact support if the issue persists.{% endif %}",
                     confirmButtonColor: "{% if message.tags == 'success' %}#3085d6{% else %}#d33{% endif %}",
@@ -93,7 +93,7 @@
 
           {% endfor %}
           <div style = 'margin-top : 25px;'>
-          <button type="submit" class="btn" style = 'width: 100px;
+          <button type="submit" class="submit" style = 'width: 100px;
           margin:0 auto;
         display:block;
         height: 40px;
@@ -117,7 +117,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
       // Add event listeners to all delete buttons
-      document.querySelectorAll(".btn").forEach(button => {
+      document.querySelectorAll(".submit").forEach(button => {
           button.addEventListener("click", function (event) {
               event.preventDefault(); // Prevent the default form submission
 

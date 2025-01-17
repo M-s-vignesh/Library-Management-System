@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
                 <a href="{{ url }}" class="nav-item nav-link">Home</a>
-                <a href="{% url 'librarian_profile' %}" class="nav-item nav-link">Profile</a>
+                <a href="{{ url | add:'/Profile'}}" class="nav-item nav-link">Profile</a>
             </div>
             <a href="{% url 'log_out' %}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 px-lg-3 mb-3 mb-md-3 mb-lg-0">Logout</a>
         </div>
@@ -38,7 +38,7 @@
     {% endif %}
 {% if title %}
 <link rel="stylesheet" href="{% static 'books/search.css' %}">
-<form method ='POST' action = '/Search-Book-By-Title'>
+<form method ='POST' >
 <div class="search-box" style = 'margin: auto;'>
 		{% csrf_token %}
     <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
@@ -47,7 +47,7 @@
 </form>`
 {% elif author %}
 <link rel="stylesheet" href="{% static 'books/search.css' %}">
-<form method ='POST' action = '/Search-Book-By-Author'>
+<form method ='POST' >
 <div class="search-box" style = 'margin: auto;'>
 		{% csrf_token %}
     <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
@@ -56,7 +56,7 @@
 </form>`
 {% elif date %}
 <link rel="stylesheet" href="{% static 'books/search.css' %}">
-<form method ='POST' action = '/Search-Book-By-Published-Date'>
+<form method ='POST'>
 <div class="search-box" style = 'margin: auto;'>
 		{% csrf_token %}
     <button class="btn-search"><i class="fas fa-search" style='color:#d8bcb8;'></i></button>
@@ -72,12 +72,10 @@
 {% endif %}
 	<div class="table">
 		<div class="table-header">
-			<div class="header__item"><a id="title" class="filter__link" href="#" >Title</a></div>
+			<div class="header__item"><a id="title" class="filter__link" href="#">Title</a></div>
 			<div class="header__item"><a id="title" class="filter__link" href="#">Author</a></div>
 			<div class="header__item"><a id="published_date" class="filter__link filter__link--number" href="#">Published Date</a></div>
-			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">No of Copies</a></div>
             <div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Current Copies</a></div>
-			<div class="header__item"><a id="losses" class="filter__link filter__link--number" href="#">Loaned Students</a></div>
         </div>
 		<div class="table-content">
             {% for detail in details %}
@@ -85,10 +83,7 @@
 				<div class="table-data">{{ detail.title }}</div>
 				<div class="table-data">{{ detail.author }}</div>
 				<div class="table-data">{{ detail.published_date }}</div>
-				<div class="table-data">{{ detail.no_of_copies }}</div>
                 <div class="table-data">{{ detail.current_copies }}</div>
-				<div class="table-data">{{ detail.Studentname }}</div>
-
 			</div>
             {% endfor %}
 		</div>

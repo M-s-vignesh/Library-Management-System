@@ -34,5 +34,12 @@ class student_form(forms.ModelForm):
            'year' : 'Year'
         }
     field_order = ['confirm_password','department','year']
+
+class Update_Student_Details(forms.Form):
+    first_name = forms.CharField(max_length=255, required=True)
+    last_name = forms.CharField(max_length=255, required=True)
+    email = forms.EmailField(max_length=255,required=True)
+    
+
             
         

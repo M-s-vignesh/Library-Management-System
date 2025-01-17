@@ -112,6 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CSRF_FAILURE_VIEW = 'Users.views.csrf_failure'
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
