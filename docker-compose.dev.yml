@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  web:
+    image: library_management
+    container_name: library_management_container
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        DJANGO_ENV: development
+    env_file:
+      - .env.dev
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+      - sqlite_data:/app/db
+    command: python manage.py runserver 0.0.0.0:8000
+
+volumes:
+  sqlite_data:
