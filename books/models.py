@@ -14,7 +14,7 @@ class Books(models.Model):
     studentname = models.ManyToManyField(Student_details,related_name='students')
 
     def __str__(self):
-         return self.title
+         return self.title+self.author
   
   
 class book_code(models.Model):
